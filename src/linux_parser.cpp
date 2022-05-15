@@ -78,11 +78,17 @@ float LinuxParser::MemoryUtilization() {
   float MemTotal, MemFree;
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
   if(stream.is_open()){
-    std::getline(stream, line1);
-    std::istringstream linestream(line1);
-    linestream>>key1>>MemTotal;
-    linestream>>key2>>MemFree;
+    while(std::getline(stream, line)){
+    std::istringstream linestream(line);
+    if (key == "MemTotal:") {
+      linestream >> MemTotal;
+    } 
+    else if (key == "MemAvailable:") {
+      linestream >> MemFree;
+      break;
+    }
     return (MemTotal-MemFree)/MemTotal;
+    }
   }
   return  0;
 }
